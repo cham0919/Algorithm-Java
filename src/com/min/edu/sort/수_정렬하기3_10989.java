@@ -1,3 +1,5 @@
+package com.min.edu.sort;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
