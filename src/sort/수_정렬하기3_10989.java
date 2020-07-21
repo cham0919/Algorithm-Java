@@ -1,4 +1,4 @@
-package com.min.edu.sort;
+package sort;
 
 import java.io.BufferedReader;
 import java.io.IOException;
