@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
-public class 가장_긴_문자열_3033 {
+public class 반복_부분문자열_1605 {
 
 	  public static void main(String[] args) throws IOException {
 	        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -14,16 +14,9 @@ public class 가장_긴_문자열_3033 {
 	 
 	        // 접미사 배열(Suffix Array)
 	        int[] suffixArray = findSuffixArray(str);
-//	        for (int i = 0; i < str.length(); i++)
-//	            System.out.print((suffixArray[i] + 1) + " ");
-//	        System.out.println();
 	         
 	        // LCP (Longest Common Prefix)
 	        int[] lcp = findLCP(str, suffixArray);
-//	        System.out.print("x ");
-//	        for (int i = 0; i < lcp.length-1; i++) {
-//	            System.out.print(lcp[i] + " ");
-//	        }
 	        int max = lcp[0];
 	        for (int i = 1; i < lcp.length; i++) {
 				if(lcp[i]>max) max = lcp[i];
@@ -33,13 +26,13 @@ public class 가장_긴_문자열_3033 {
 	 
 	    public static int[] findSuffixArray(String str) {
 	        int N = str.length();
-	        SuffixT[] sa = new SuffixT[N];
+	        Suffix[] sa = new Suffix[N];
 	 
 	        // 초기 인덱스, 각 접미사의 첫 글자에 맞는 사전순에 맞는 rank 지정
 	        for (int i = 0; i < N; i++) {
 	            // a:0, b:1, c:2, ..., z:25 
 	            int rank = str.charAt(i) - 'a';
-	            sa[i] = new SuffixT(i, rank);
+	            sa[i] = new Suffix(i, rank);
 	        }
 	         
 	        // 접미사 앞에서 두번째 글자로 nextRank 계산
@@ -137,16 +130,16 @@ public class 가장_긴_문자열_3033 {
 	    }
 	}
 	 
-	class SuffixT implements Comparable<SuffixT> {
+	class Suffix implements Comparable<Suffix> {
 	    int index; // 초기 인덱스
 	    int rank, nextRank;
 	 
-	    public SuffixT(int index, int rank) {
+	    public Suffix(int index, int rank) {
 	        this.index = index;
 	        this.rank = rank;
 	    }
 	 
-	    public int compareTo(SuffixT target) {
+	    public int compareTo(Suffix target) {
 	        // 같은 경우:0, 작은 경우: -1, 큰 경우: 1
 	        if (this.rank != target.rank)
 	            return Integer.compare(this.rank, target.rank);
