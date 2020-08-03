@@ -13,7 +13,6 @@ public class 베스트앨범_programmers {
 
 		System.out.println(Arrays.toString(result));
 		
-		
 	}
 
 
