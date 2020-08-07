@@ -1,4 +1,4 @@
-package brute_force;
+package string_pt;
 
 import java.util.Arrays;
 import java.util.Scanner;
