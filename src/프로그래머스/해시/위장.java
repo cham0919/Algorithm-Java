@@ -3,6 +3,9 @@ package 프로그래머스.해시;
 import java.util.*;
 import static java.util.stream.Collectors.*;
 
+/**
+ * https://programmers.co.kr/learn/courses/30/lessons/42578?language=python3
+ */
 public class 위장 {
 
     public static void main(String[] args) {
