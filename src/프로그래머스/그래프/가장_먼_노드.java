@@ -63,6 +63,7 @@ public class 가장_먼_노드 {
     public int solution2(int n, int[][] edge) {
         ArrayList<Integer>[] path = new ArrayList[n];
         ArrayList<Integer> bfs = new ArrayList<Integer>();
+        bfs.sort((o1, o2) -> o1.compareTo(o2));
         int answer = 0;
         int[] dist = new int[n];
         dist[0] = 1;
