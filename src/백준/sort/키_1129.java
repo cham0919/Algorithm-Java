@@ -2,7 +2,6 @@ package 백준.sort;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.*;
 
 /**
  * https://www.acmicpc.net/problem/1129 미결
@@ -37,34 +36,51 @@ public class 키_1129 {
 		Arrays.sort(people);
 		if (n <= 2) return people;
 
-		List<Integer> peopleList = IntStream.of(people)
-				.boxed()
-				.collect(Collectors.toList());
+
 
 		// 최대값
-		int max = peopleList.get(n-1) - peopleList.get(0);
-		int idx = n-2;
+		int max = people[n-1];
+		int leftMax = max - people[1];
+		int rightMax = max - people[0];
 
-		while (idx > 0) {
+		List<Integer> leftArray = new LinkedList<>();
+		List<Integer> rightArray = new LinkedList<>();
 
-			while (idx > 0
-					&& (peopleList.get(idx) - peopleList.get(0) >= max
-					|| peopleList.get(idx+1) - peopleList.get(idx-1) >= max
-					|| peopleList.get(n-1) - peopleList.get(idx) >= max)){
-				idx--;
-			};
+		leftArray.add(people[0]);
+		leftArray.add(people[1]);
 
-			if (idx == 0) break;
-			max = peopleList.get(idx) - peopleList.get(0);
-			switchArray(peopleList, idx);
-			idx--;
+		Queue<Integer> queue = new PriorityQueue<>();
+
+		for (int i = 2; i < people.length-1; i++) {
+			queue.add(people[i]);
 		}
 
-		return peopleList.stream().mapToInt(Integer::intValue).toArray();
-	}
+		int tmp = 0;
 
-	private static void switchArray(List<Integer> peopleList, int idx) {
-		int changeNum = peopleList.remove(idx);
-		peopleList.add(changeNum);
+		while (!queue.isEmpty()){
+			tmp = queue.poll();
+			if (leftMax == rightMax || leftMax > rightMax) {
+				leftArray.add(tmp);
+				leftMax = max - tmp;
+			} else {
+				rightArray.add(tmp);
+				rightMax = max - tmp;
+			}
+		}
+
+		int[] result = new int[n];
+		int i = 0;
+		for (Integer integer : leftArray) {
+			result[i++] = integer;
+		}
+
+		result[i++] = max;
+
+		for (int i1 = rightArray.size() - 1; i1 >= 0; i1--) {
+			result[i++] = rightArray.get(i1);
+		}
+
+
+		return result;
 	}
 }
