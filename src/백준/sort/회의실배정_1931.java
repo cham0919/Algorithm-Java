@@ -22,8 +22,8 @@ public class 회의실배정_1931 {
             lessionRoom[i] = temp;
         }
         Arrays.sort(lessionRoom, (o1, o2) -> {
-            if ((o1[1] - o2[1]) == 0) {
-                return o2[0] - o1[0];
+            if (o1[1] == o2[1]) {
+                return o1[0] - o2[0];
             } else {
                 return o1[1] - o2[1];
             }
@@ -33,27 +33,17 @@ public class 회의실배정_1931 {
             System.out.println(Arrays.toString(ints));
         }
 
+        int max = 0;
+        int endLessionTime = 0;
 
-        int max = Integer.MIN_VALUE;
-        lessionCount[lessionRoom.length - 1] = 1;
-        for (int i = lessionRoom.length - 2; i >= 0; i--) {
-            int[] lession = lessionRoom[i];
-            int[] postLession = lessionRoom[i+1];
-            lessionCount[i] = 1;
-
-            if (lession[1] <= postLession[0]) {
-                lessionCount[i] += lessionCount[i+1];
-            } else {
-                for (int i1 = i + 2; i1 < lessionRoom.length; i1++) {
-                    postLession = lessionRoom[i1];
-                    if (lession[1] <= postLession[0]) {
-                        lessionCount[i] += lessionCount[i1];
-                        break;
-                    }
-                }
+        for (int[] ints : lessionRoom) {
+            if (endLessionTime <= ints[0]) {
+                max++;
+                endLessionTime = ints[1];
             }
-            max = Math.max(max, lessionCount[i]);
         }
+
+
         System.out.println(max);
     }
 }
