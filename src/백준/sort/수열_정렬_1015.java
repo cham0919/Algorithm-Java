@@ -17,8 +17,6 @@ public class 수열_정렬_1015 {
             array[i] = Integer.parseInt(st.nextToken());
         }
 
-        System.out.println(Arrays.toString(array));
-
         int[] sortedArray = Arrays.stream(array)
                 .sorted()
                 .toArray();
@@ -41,8 +39,6 @@ public class 수열_정렬_1015 {
                 }
             }
         }
-
-        System.out.println(Arrays.toString(resultArray));
 
         for (int i = 0; i < resultArray.length - 1; i++) {
             System.out.print(resultArray[i] + " ");
