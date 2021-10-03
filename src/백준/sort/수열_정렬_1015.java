@@ -19,7 +19,7 @@ public class 수열_정렬_1015 {
 
         int[] sortedArray = Arrays.stream(array)
                 .sorted()
-                .toArray();
+                .toArray(); 
 
         int recordIVal = -1;
         int overlapCnt = 0;
