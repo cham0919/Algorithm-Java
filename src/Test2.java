@@ -1,12 +1,11 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Test2 {
 
     public static void main(String[] args) {
         Test2 test = new Test2();
-        List<int[][]> pricesTestCases = getPricesTestCases();
+        List<int[]> pricesTestCases = getPricesTestCases();
         List<Integer> results = getResultTestCases();
 
         for (int i = 0; i < pricesTestCases.size(); i++) {
@@ -20,124 +19,88 @@ public class Test2 {
         }
     }
 
-    int[] start;
-    int[] exit;
-    LinkedList<int[]> fixedCarQueue = new LinkedList<>();
+    public int solution(int[] numbers) {
+        int result = 0;
+        int[] bite = new int[numbers.length];
 
-    // 출구부터 4와 인접한 칸들은 모두 4로 채우기
-    // 막힌 빨간 차가 있을 시, 큐에 넣기
-    //
-    public int solution(int[][] cars) {
-        start = null;
-        exit = null;
-        fixedCarQueue.clear();
-        // 채우기 0, 1, -1
-        findEndPoint(cars);
-        dfsExitToStart(cars, exit[0], exit[1]);
-        if (cars[start[0]][start[1]] < 4) {
-            return -1;
-        } else {
-            return cars[start[0]][start[1]] - 4;
-        }
-    }
-
-    private void dfsExitToStart(int[][] cars, int idx1, int idx2) {
-        if (!isWithinRange(cars, idx1, idx2)) {
-            return;
+        for (int i = 0; i < bite.length; i++) {
+            bite[i] = getBit(numbers[i], numbers.length, i);
         }
 
-        int val = 4;
 
-        // 상, 하, 좌, 우 탐색하며 0이면 모두 4로 전염
-        dfsFillParkingLot(cars, val, idx1 -1, idx2);
-        dfsFillParkingLot(cars, val, idx1 +1, idx2);
-        dfsFillParkingLot(cars, val, idx1, idx2 -1);
-        dfsFillParkingLot(cars, val, idx1, idx2 +1);
+        int number = 1;
 
-        // 탐색했는데 출발점에 닿지 않았고 큐에 값이 있다면
-        while (cars[start[0]][start[1]] < val && !fixedCarQueue.isEmpty()) {
-            int[] tmpArray = fixedCarQueue.removeFirst();
-            idx1 = tmpArray[0];
-            idx2 = tmpArray[1];
-
-            dfsFillParkingLot(cars, cars[idx1][idx2], idx1 -1, idx2);
-            dfsFillParkingLot(cars, cars[idx1][idx2], idx1 +1, idx2);
-            dfsFillParkingLot(cars, cars[idx1][idx2], idx1, idx2 -1);
-            dfsFillParkingLot(cars, cars[idx1][idx2], idx1, idx2 +1);
+        if (bite[0] == 1) {
+            result += number;
         }
-        return;
-    }
 
-    private void findEndPoint(int[][] cars) {
-        for (int i = 0; i < cars.length; i++) {
-            for (int i1 = 0; i1 < cars[i].length; i1++) {
-                if (cars[i][i1] == 1) {
-                    start = new int[]{i, i1};
-                } else if (cars[i][i1] == 4) {
-                    exit = new int[]{i, i1};
-                } else if (start != null && exit != null) {
-                    return;
-                }
+        for (int i = 1; i < bite.length; i++) {
+            number *= 2;
+
+            if (bite[i] == 1) {
+                result += number;
             }
         }
+
+        return result;
     }
 
-    private void dfsFillParkingLot(int[][] cars, int val, int idx1, int idx2) {
-        // 범위 밖이거나 출발점에 값이 있으면 반환
-        if (!isWithinRange(cars, idx1, idx2)) {
-            return;
-        } else if (cars[start[0]][start[1]] >= 4 ) {
-            return;
+
+    public int getBit(int number, int size, int flag){
+        if (number == 0) {
+            return 0;
         }
 
-        // 값 대입
-        int carType = cars[idx1][idx2];
-        if (carType >= 4) {
-            return;
-        }
-        if (carType == 0) {
-            cars[idx1][idx2] = val;
-        } else if (carType == 2) {
-            cars[idx1][idx2] = val+1;
-            fixedCarQueue.add(new int[]{idx1, idx2});
-            return;
-        } else if (carType == 3) {
-            return;
-        } else if (carType == 1) {
-            cars[idx1][idx2] = val;
-            return;
+        long num = 1;
+        int idx = size;
+        int[] bite = new int[size];
+
+        if (size > 1) {
+            for (int i = 0; i < size; i++) {
+                num *= 2;
+            }
         }
 
-        // 다시 상하좌우 참색
-        dfsFillParkingLot(cars, val, idx1 -1, idx2);
-        dfsFillParkingLot(cars, val, idx1 +1, idx2);
-        dfsFillParkingLot(cars, val, idx1, idx2 -1);
-        dfsFillParkingLot(cars, val, idx1, idx2 +1);
+
+        while (number < num) {
+            num /= 2;
+            idx --;
+        }
+
+        for (int i = idx; i >= flag; i--) {
+            if (number > num) {
+                number -= num;
+                bite[i]++;
+            } else if (number == num) {
+                bite[i]++;
+                break;
+            }
+                num /= 2;
+        }
+
+        return bite[flag];
     }
 
-    private boolean isWithinRange(int[][] cars, int idx1, int idx2) {
-        return idx1 >= 0 && idx1 < cars.length && idx2 >= 0 &&  idx2 < cars[0].length;
-    }
 
     //    ===================================================TEST CASE===========================================================
 
     public static List<Integer> getResultTestCases(){
         List<Integer> results = new ArrayList<>();
-        results.add(2);
+        results.add(19);
+        results.add(15);
         results.add(0);
-        results.add(-1);
 
         return results;
     }
 
 
 
-    public static List<int[][]> getPricesTestCases(){
-        int[][] price1 = {{0, 0, 3, 0, 0, 0, 0}, {1, 0, 3, 0, 0, 0, 0}, {0, 0, 3, 0, 0, 0, 0}, {0, 0, 2, 0, 0, 3, 3}, {2, 2, 2, 0, 2, 0, 0}, {3, 3, 2, 0, 2, 0, 3}, {3, 3, 2, 0, 2, 0, 4}};
-        int[][] price2 = {{0, 2, 0, 0, 0}, {0, 4, 2, 0, 0}, {0, 2, 0, 0, 0}, {0, 0, 0, 2, 1}, {0, 0, 0, 2, 0}};
-        int[][] price3 = {{0, 0, 0, 0, 0}, {3, 0, 0, 0, 0}, {4, 3, 0, 0, 0}, {0, 0, 3, 0, 0}, {0, 0, 0, 3, 1}};
+    public static List<int[]> getPricesTestCases(){
+        int[] price1 = {5, 27, 9, 0, 31};
+        int[] price2 = {1, 2, 4, 8};
+        int[] price3 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-        List<int[][]> pricesList = new ArrayList<>();
+        List<int[]> pricesList = new ArrayList<>();
         pricesList.add(price1);
         pricesList.add(price2);
         pricesList.add(price3);
@@ -146,3 +109,4 @@ public class Test2 {
     }
 
 }
+
