@@ -1,5 +1,7 @@
 package 백준.greedy;
 
+import jdk.swing.interop.SwingInterOpUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,26 +26,59 @@ public class 합_1132 {
 
         char[] alphabetArray = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
         Map<Character, Alphabet> alphabetMap = new HashMap<>();
+        int number = 9;
+        int result = 0;
         for (char c : alphabetArray) {
             alphabetMap.put(c, new Alphabet());
         }
 
-
-        
         List<String> numberList = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            char[] tempAlphabetArray = st.nextToken().toCharArray();
-            for (int c : tempAlphabetArray) {
-
-            }
-
+            numberList.add(st.nextToken());
         }
 
-        char a = 'A'; // 65
-        char j = 'J'; // 74
+        numberList.sort((o1, o2) -> o2.length() - o1.length());
 
-        System.out.println((int)j);
+        for (int i = 0; i < size; i++) {
+
+            String tempNumber = numberList.get(i);
+            char alphabetChar = tempNumber.charAt(0);
+            int tempSum = 0;
+
+            // 같은 사이즈가 있는지 체크
+            if (tempNumber.length() == numberList.get(i+1).length()) {
+
+            } else {
+                // 가장 큰 수일때
+
+                Alphabet alphabet = alphabetMap.get(alphabetChar);
+
+
+                // 값 할당되어있는지
+                if (alphabet.isAssign()) {
+                    tempSum = tempNumber.length() > 1 ? (10 * (tempNumber.length() - 1)) * alphabet.getValue() : alphabet.getValue();
+                    result += tempSum;
+                } else {
+                    alphabet.setValue(number--)
+                            .setAssign(true)
+                            .setUseIndex(0);
+
+
+                }
+
+                tempNumber = tempNumber.substring(1);
+                numberList.remove(i);
+                numberList.add(i, tempNumber);
+
+
+
+
+            }
+        }
+
+
+//        System.out.println(0);
     }
 }
 
@@ -69,5 +104,18 @@ class Alphabet {
     public Alphabet setValue(int value) {
         this.value = value;
         return this;
+    }
+
+    public Alphabet setUseIndex(int index) {
+        int tempIdx = index;
+        while (tempIdx >= 0 && useIndex[tempIdx] == 0) {
+            useIndex[tempIdx] = index;
+            tempIdx--;
+        }
+        return this;
+    }
+
+    public int getUseIndex(int index) {
+        return useIndex[index];
     }
 }
