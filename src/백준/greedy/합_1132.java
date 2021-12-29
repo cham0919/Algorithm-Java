@@ -1,121 +1,106 @@
 package 백준.greedy;
 
-import jdk.swing.interop.SwingInterOpUtils;
-
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Arrays;
 
 // https://www.acmicpc.net/problem/1132
-public class 합_1132 {
+interface Tags {
+    public static final int LEN_OF_A_TO_J = 'J'-'A'+1;
+}
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+class Alphabet implements Comparable<Alphabet> {
+    static boolean[] exist = new boolean[Tags.LEN_OF_A_TO_J];
+    static int cnt = 0;
 
-        int size = Integer.parseInt(br.readLine());
+    int idx;
+    long weight;
+    boolean notZero;
 
-//      1. 변수 중 사이즈가 가장 큰 수 탐색
-//      2. 사이즈 가장 큰 수 탐색
-//      3. 값 할당되어있는지 체크
-//      4. 할당안되어 있으면 가장 큰 수 할당
-//      5. 사이즈가 동일한게 여러개일 경우
-//      6. 해당 값이 다음 탐색 통해 가장 먼저 나오는 값에 할당
-//      3. 자리수 카운팅 후, 1번 ~ 3번 반복
-//      4. 마지막 한자리 수가 있을시, 3번에게 0 양도 후 1 할당
+    public Alphabet(int idx) {
+        this.idx = idx;
+        this.weight = 0;
+        this.notZero = false;
+    }
 
-        char[] alphabetArray = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-        Map<Character, Alphabet> alphabetMap = new HashMap<>();
-        int number = 9;
-        int result = 0;
-        for (char c : alphabetArray) {
-            alphabetMap.put(c, new Alphabet());
+    public void addWeight(long weight) {
+        this.weight += weight;
+        setExist();
+    }
+
+    private void setExist() {
+        if (!exist[idx]) {
+            cnt++;
+            exist[idx] = true;
         }
+    }
 
-        List<String> numberList = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            numberList.add(st.nextToken());
-        }
-
-        numberList.sort((o1, o2) -> o2.length() - o1.length());
-
-        for (int i = 0; i < size; i++) {
-
-            String tempNumber = numberList.get(i);
-            char alphabetChar = tempNumber.charAt(0);
-            int tempSum = 0;
-
-            // 같은 사이즈가 있는지 체크
-            if (tempNumber.length() == numberList.get(i+1).length()) {
-
-            } else {
-                // 가장 큰 수일때
-
-                Alphabet alphabet = alphabetMap.get(alphabetChar);
-
-
-                // 값 할당되어있는지
-                if (alphabet.isAssign()) {
-                    tempSum = tempNumber.length() > 1 ? (10 * (tempNumber.length() - 1)) * alphabet.getValue() : alphabet.getValue();
-                    result += tempSum;
-                } else {
-                    alphabet.setValue(number--)
-                            .setAssign(true)
-                            .setUseIndex(0);
-
-
-                }
-
-                tempNumber = tempNumber.substring(1);
-                numberList.remove(i);
-                numberList.add(i, tempNumber);
-
-
-
-
-            }
-        }
-
-
-//        System.out.println(0);
+    @Override
+    public int compareTo(Alphabet o) {
+        if (o.weight == this.weight) return 0;
+        else if (o.weight > this.weight) return 1;
+        return -1;
     }
 }
 
-class Alphabet {
-
-    private boolean isAssign = false;
-    private int value = 0;
-    private int[] useIndex = new int[12];
-
-    public boolean isAssign() {
-        return isAssign;
-    }
-
-    public Alphabet setAssign(boolean assign) {
-        isAssign = assign;
-        return this;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public Alphabet setValue(int value) {
-        this.value = value;
-        return this;
-    }
-
-    public Alphabet setUseIndex(int index) {
-        int tempIdx = index;
-        while (tempIdx >= 0 && useIndex[tempIdx] == 0) {
-            useIndex[tempIdx] = index;
-            tempIdx--;
+public class 합_1132 {
+    private void solution() throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        Alphabet[] alphabets = new Alphabet[Tags.LEN_OF_A_TO_J];
+        for (int i = 0; i < alphabets.length; i++) {
+            alphabets[i] = new Alphabet(i);
         }
-        return this;
+        String[] arr = new String[n];
+
+        for (int i = 0; i < n; i++) {
+            String s = br.readLine();
+            arr[i] = s;
+
+            long w = 1;
+            for (int j = s.length()-1; j >= 0; j--, w*=10) {
+                int idx = s.charAt(j) - 'A';
+                alphabets[idx].addWeight(w);
+                if (j==0) {
+                    alphabets[idx].notZero = true;
+                }
+            }
+        }
+
+        Arrays.sort(alphabets);
+        if (Alphabet.cnt == Tags.LEN_OF_A_TO_J && alphabets[alphabets.length-1].notZero) {
+            for (int i = alphabets.length-2; i >= 0; i--) {
+                if (!alphabets[i].notZero) {
+                    Alphabet tmp = alphabets[i];
+                    for (int j = i; j < alphabets.length-1; j++) {
+                        alphabets[j] = alphabets[j + 1];
+                    }
+                    alphabets[alphabets.length-1] = tmp;
+                    break;
+                }
+            }
+        }
+
+        int[] weight = new int[Tags.LEN_OF_A_TO_J];
+        int digit = 9;
+        for (Alphabet ap : alphabets) {
+            weight[ap.idx] = digit--;
+        }
+
+        long sum = 0;
+        for (String s : arr) {
+            long cur = 0;
+            long w = 1;
+            for (int j = s.length()-1; j >= 0; j--, w*=10) {
+                int idx = s.charAt(j) - 'A';
+                cur += weight[idx]*w;
+            }
+            sum += cur;
+        }
+        System.out.println(sum);
     }
 
-    public int getUseIndex(int index) {
-        return useIndex[index];
+    public static void main(String[] args) throws Exception {
+        new 합_1132().solution();
     }
 }
