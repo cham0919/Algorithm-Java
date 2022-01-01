@@ -104,3 +104,6 @@ public class 합_1132 {
         new 합_1132().solution();
     }
 }
+
+
+// 참조 https://nahwasa.com/entry/%EB%B0%B1%EC%A4%80-1132-%EC%9E%90%EB%B0%94-%ED%95%A9-BOJ-1132-JAVA
